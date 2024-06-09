@@ -9,6 +9,8 @@ const googleMapsClient = require('@google/maps').createClient({
 const GOOGLE_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 async function getCoordinates(address) {
+  console.log("Google Maps API Key:", process.env.GOOGLE_MAPS_API_KEY); // Temporary log statement
+
   const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_API_KEY}`;
   const response = await axios.get(geocodeUrl);
 

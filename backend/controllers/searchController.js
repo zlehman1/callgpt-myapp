@@ -8,7 +8,7 @@ exports.findNearbyPharmacies = async (req, res) => {
     const pharmacies = await googleMapsService.getUniquePharmaciesWithDetails(location);
     //console.log('Found pharmacies:', pharmacies);
 
-    const result = await this.checkPharmaciesInDatabase(pharmacies, medication, dosage);
+    const result = await this.checkMedicationAvailability(pharmacies, medication, dosage);
 
     res.json(result);
   } catch (error) {

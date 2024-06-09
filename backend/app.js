@@ -13,6 +13,14 @@ ExpressWs(app);
 
 const PORT = process.env.PORT || 3000;
 
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Import routes
+const searchRoutes = require('./routes/searchRoutes');
+
+app.use('/search', searchRoutes);
+
 app.post('/incoming', (req, res) => {
   res.status(200);
   res.type('text/xml');
