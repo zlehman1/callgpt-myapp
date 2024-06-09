@@ -2,6 +2,9 @@ require('dotenv').config();
 require('colors');
 const express = require('express');
 const ExpressWs = require('express-ws');
+const router = express.Router();
+//const makeOutboundCall = require('./controllers/callController'); // Ensure the path is correct
+
 
 const { GptService } = require('./services/gpt-service');
 const { StreamService } = require('./services/stream-service');
@@ -16,10 +19,12 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Import routes
-const searchRoutes = require('./routes/searchRoutes');
+// Integrate the new routes
+const searchRouter = require('./routes/searchRoutes');
+const callRouter = require('./routes/callRoutes');
 
-app.use('/search', searchRoutes);
+app.use('/search', searchRouter);
+app.use('/call', callRouter);
 
 app.post('/incoming', (req, res) => {
   res.status(200);
@@ -32,6 +37,17 @@ app.post('/incoming', (req, res) => {
   </Response>
   `);
 });
+
+// router.post('/initiate-call', async (req, res) => {
+//   try {
+//     await makeOutboundCall();
+//     res.status(200).send('Call initiated successfully');
+//   } catch (error) {
+//     res.status(500).send('Failed to initiate call');
+//   }
+// });
+
+module.exports = router;
 
 app.ws('/connection', (ws) => {
   try {
