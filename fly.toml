@@ -1,0 +1,16 @@
+app = "callgpt-myapp-unique"
+
+[build]
+  image = "node:14"
+
+[env]
+  SERVER = "${SERVER}"
+  OPENAI_API_KEY = "${KEYS_OPENAI_API_KEY}"
+  DEEPGRAM_API_KEY = "${KEYS_DEEPGRAM_API_KEY}"
+  TWILIO_ACCOUNT_SID = "${KEYS_TWILIO_ACCOUNT_SID}"
+  TWILIO_AUTH_TOKEN = "${KEYS_TWILIO_AUTH_TOKEN}"
+  FROM_NUMBER = "${OUTBOUND_CALLER_NUMBER}"
+  TO_NUMBER = "${YOUR_NUMBER}"
+
+[deploy]
+  release_command = "npm run start"
