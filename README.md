@@ -38,19 +38,21 @@ Copy `.env.example` to `.env` and configure the following environment variables:
 
 ```bash
 # Your ngrok or server URL
-# E.g. 123.ngrok.io or myserver.fly.dev (exlude https://)
+# E.g. 123.ngrok.io or myserver.fly.dev (exclude https://)
 SERVER="yourserverdomain.com"
 
 # Service API Keys
-OPENAI_API_KEY="sk-XXXXXX"
-DEEPGRAM_API_KEY="YOUR-DEEPGRAM-API-KEY"
+OPENAI_API_KEY="${KEYS_OPENAI_API_KEY}"
+DEEPGRAM_API_KEY="${KEYS_DEEPGRAM_API_KEY}"
 
 # Configure your Twilio credentials if you want
 # to make test calls using '$ npm test'.
-TWILIO_ACCOUNT_SID="YOUR-ACCOUNT-SID"
-TWILIO_AUTH_TOKEN="YOUR-AUTH-TOKEN"
-FROM_NUMBER='+12223334444'
-TO_NUMBER='+13334445555'
+TWILIO_ACCOUNT_SID="${KEYS_TWILIO_ACCOUNT_SID}"
+TWILIO_AUTH_TOKEN="${KEYS_TWILIO_AUTH_TOKEN}"
+FROM_NUMBER='+18888707923'
+TO_NUMBER='+18582825934'
+
+# Note: Recent changes include enhanced error handling and logging in the WebSocket connection and the addition of the execute_call.js script.
 ```
 
 ### 3. Install Dependencies with NPM
@@ -222,7 +224,7 @@ For our `placeOrder` function, the arguments passed will look like this:
 }
 ```
 ### Returning Arguments to GPT
-Your function should always return a value: GPT will get confused when the function returns nothing, and may continue trying to call the function expecting an answer. If your function doesn't have any data to return to the GPT, you should still return a response with an instruction like "Tell the user that their request was processed successfully." This prevents the GPT from calling the function repeatedly and wasting tokens. 
+Your function should always return a value: GPT will get confused when the function returns nothing, and may continue trying to call the function expecting an answer. If your function doesn't have any data to return to the GPT, you should still return a response with an instruction like "Tell the user that their request was processed successfully." This prevents the GPT from calling the function repeatedly and wasting tokens.
 
 Any data that you return to the GPT should match the expected format listed in the `returns` key of `function-manifest.js`.
 
@@ -251,7 +253,7 @@ try {
       }),
     }
   );
-  
+
   if (response.status === 200) {
     const audioArrayBuffer = await response.arrayBuffer();
     this.emit('speech', partialResponseIndex, Buffer.from(audioArrayBuffer).toString('base64'), partialResponse, interactionCount);
@@ -276,7 +278,7 @@ Fly.io is a hosting service similar to Heroku that simplifies the deployment pro
 
 > Deploying to Fly.io is not required to try the app, but can be helpful if your home internet speed is variable.
 
-Modify the app name `fly.toml` to be a unique value (this must be globally unique).
+Modify the app name in `fly.toml` to be a unique value (this must be globally unique). Replace placeholder values with actual environment variables or secrets.
 
 Deploy the app using the Fly.io CLI:
 ```bash
@@ -288,4 +290,11 @@ fly deploy
 Import your secrets from your .env file to your deployed app:
 ```bash
 fly secrets import < .env
+```
+
+### Fly.io Credentials
+Ensure you have Fly.io credentials for deployment. If you encounter authentication issues, follow the instructions provided by Fly.io to complete the authentication process.
+
+### Creating a Pull Request
+To create a pull request using the `gh` CLI tool, ensure that the GitHub token has the necessary permissions. If you encounter a "Resource not accessible by integration" error, adjust the permissions of the GitHub token or provide a new token with the required permissions.
 ```
