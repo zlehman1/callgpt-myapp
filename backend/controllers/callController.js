@@ -33,4 +33,21 @@ async function makeOutBoundCall(req, res) {
   }
 }
 
-module.exports = { makeOutBoundCall };
+async function endCall(req, res) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+  const client = twilio(accountSid, authToken);
+  const callSid = req.body.callSid;
+
+  try {
+    const call = await client.calls(callSid).update({ status: 'completed' });
+    res.status(200).send({ success: true, message: 'Call ended successfully' });
+  } catch (error) {
+    console.error('Error ending call:', error);
+    res.status(500).send({ success: false, message: 'Failed to end call' });
+  }
+}
+
+module.exports = { makeOutBoundCall, endCall };
+

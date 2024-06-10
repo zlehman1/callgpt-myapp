@@ -3,6 +3,33 @@ const tools = [
   {
     type: 'function',
     function: {
+      name: 'endCall',
+      say: '',
+      description: 'Ends the current phone call with the customer.',
+      parameters: {
+        type: 'object',
+        properties: {
+          callSid: {
+            type: 'string',
+            description: 'The unique identifier for the active phone call.',
+          },
+        },
+        required: ['callSid'],
+      },
+      returns: {
+        type: 'object',
+        properties: {
+          status: {
+            type: 'string',
+            description: 'Whether or not the call was successfully ended.'
+          },
+        }
+      }
+    },
+  },
+  {
+    type: 'function',
+    function: {
       name: 'checkInventory',
       say: 'Let me check our inventory right now.',
       description: 'Check the inventory of airpods, airpods pro or airpods max.',
