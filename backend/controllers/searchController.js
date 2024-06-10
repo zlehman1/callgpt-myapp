@@ -6,7 +6,7 @@ exports.findNearbyPharmacies = async (req, res) => {
   try {
     console.log('Calling findNearbyPharmacies with location:', location);
     const pharmacies = await googleMapsService.getUniquePharmaciesWithDetails(location);
-    //console.log('Found pharmacies:', pharmacies);
+    console.log('Found pharmacies:', pharmacies);
 
     const result = await this.checkMedicationAvailability(pharmacies, medication, dosage);
 
@@ -17,7 +17,68 @@ exports.findNearbyPharmacies = async (req, res) => {
   }
 };
 
-//const pharmacyModel = require('../models/pharmacyModel');
+// //const pharmacyModel = require('../models/pharmacyModel');
+// exports.checkMedicationAvailability = async (pharmacies, medicationType, medicationDosage) => {
+//   const pharmacyStatuses = [];
+
+//   for (const pharmacy of pharmacies) {
+//     const pharmacyDetails = await pharmacyModel.getMedicationAvailabilityByPharmacyId(pharmacy.place_id, medicationType);
+
+//     let status = 'Unknown';
+//     if (pharmacyDetails) {
+//       const specificMedication = pharmacyDetails.find(
+//         detail => detail.dosage === medicationDosage
+//       );
+
+//       if (specificMedication) {
+//         if (specificMedication.available === 'Yes') {
+//           // If medication is available, return immediately
+//           return { status: 'Medication Available', pharmacy: {
+//             id: pharmacy.place_id,
+//             name: pharmacy.name,
+//             address: pharmacy.vicinity,
+//             phoneNumber: pharmacy.phoneNumber, // Assuming phone number is available
+//             medications: pharmacyDetails,
+//             status: 'Available'
+//           }};
+//         } else {
+//           status = 'No';
+//         }
+//       }
+//     }
+
+//     // Push the pharmacy details into the array
+//     pharmacyStatuses.push({
+//       id: pharmacy.place_id,
+//       name: pharmacy.name,
+//       address: pharmacy.vicinity,
+//       phoneNumber: pharmacy.phoneNumber, // Assuming phone number is available
+//       medications: pharmacyDetails,
+//       status
+//     });
+//   }
+
+//   // If no pharmacy has the medication available, check if all are 'No'
+//   const allNo = pharmacyStatuses.every(p => p.status === 'No');
+//   if (allNo) {
+//     return { status: 'No Medication Available', pharmacies: pharmacyStatuses };
+//   }
+
+//   // If there are mixed statuses, return 'Unknown' with all pharmacies
+//   return { status: 'Unknown', pharmacies: pharmacyStatuses };
+// };
+//helper function 
+
+const storePharmacy = (pharmacy, pharmacyDetails, status) => {
+  return {
+    pharmacy: pharmacy,
+    medications: pharmacyDetails,
+    status: status,
+    address: pharmacy.vicinity, // Added details
+    phoneNumber: pharmacy.phone_number // Added details
+  };
+};
+
 
 exports.checkMedicationAvailability = async (pharmacies, medicationType, medicationDosage) => {
   let allNo = true;
@@ -55,49 +116,11 @@ exports.checkMedicationAvailability = async (pharmacies, medicationType, medicat
   }
   
   if (allNo) {
+    console.log('returning this info to frontend: pharmacies:', JSON.stringify(pharmacyStatuses));
     return { status: 'No Medication Available', pharmacies: pharmacyStatuses };
   } else {
+    console.log('returning this info to frontend: pharmacies:', JSON.stringify(pharmacyStatuses));
     return { status: 'Unknown', pharmacies: pharmacyStatuses };
   }
 };
-
-// // New function for checking pharmacies
-// exports.checkPharmaciesInDatabase = async (pharmacies, medication, dosage) => {
-//   //console.log('Pharmacies argument:', pharmacies);  // Add this line to log pharmacies
-
-//   let allNo = true;
-//   const pharmacyStatuses = [];
-
-//   for (const pharmacy of pharmacies) {
-//     const pharmacyDetails = await pharmacyModel.getPharmacyByPlaceId(pharmacy.place_id);
-
-//     if (pharmacyDetails) {
-//      // const medicationColumn = `${medication.toLowerCase()}_${dosage.replace(' ', '').toLowerCase()}`;
-//       const medicationColumn = `${medication.toLowerCase()}_${dosage.toLowerCase().replace(' ', '_')}`;
-//       console.log('Medication column:', medicationColumn);
-      
-//       if (pharmacyDetails[medicationColumn] === 1) {
-//         console.log("found it!")
-//         return {pharmacy, status: 'Medication Available' };
-//       } else if (pharmacyDetails[medicationColumn] === 0) {
-//         allNo = allNo && true;
-//         pharmacyStatuses.push({ pharmacy: pharmacy, medications: pharmacyDetails, status: 'No' });
-//       } else {
-//         allNo = false;
-//         pharmacyStatuses.push({ pharmacy: pharmacy, medications: pharmacyDetails, status: 'Unknown' });
-//       }
-//     } else {
-//       allNo = false;
-//       pharmacyStatuses.push({ pharmac: pharmacy, medications: pharmacyDetails, status: 'Unknown' });
-//     }
-//   }
-
-//   if (allNo) {
-//     return { status: 'No Medication Available', pharmacies: pharmacyStatuses };
-//   } else {
-//     console.log('Pharmacy statuses:', pharmacyStatuses);
-//     return { status: 'Unknown', pharmacies: pharmacyStatuses };
-//   }
-// };
-
 
