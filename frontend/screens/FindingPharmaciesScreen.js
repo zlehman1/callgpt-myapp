@@ -4,17 +4,19 @@ import { Alert } from 'react-native';
 import Screen from '../components/Screen';
 import Subtitle from '../components/Subtitle';
 import SpinningLogo from '../components/SpinningLogo';
+import { SERVER } from '@env'; // Update import statement
 
 const FindingPharmaciesScreen = ({ route, navigation }) => {
   const { medication, dosage, location } = route.params;
 
   useEffect(() => {
+    console.log('SERVER:', SERVER)
     const findPharmacies = async () => {
       try {
         // Simulate a delay before making the API call
         await new Promise(resolve => setTimeout(resolve, 3000));
   
-        const response = await fetch('https://6f58-23-93-194-212.ngrok-free.app/search/find-pharmacies', {
+        const response = await fetch(`https://${SERVER}/search/find-pharmacies`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

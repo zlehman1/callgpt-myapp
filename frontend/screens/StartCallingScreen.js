@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Title from '../components/Title';
@@ -5,6 +6,8 @@ import Screen from '../components/Screen';
 import TopLogo from '../components/TopLogo';
 import Subtitle from '../components/Subtitle';
 import Text from '../components/Text'; // Update import statement
+import { Alert } from 'react-native';
+import { SERVER } from '@env'; // Update import statement
 
 import CustomButton from '../components/CustomButton';
 
@@ -15,19 +18,21 @@ const StartCallingScreen = ({ route, navigation }) => {
     if (pharmacies && pharmacies.length > 0) {
       try {
         const pharmacy = pharmacies[0];
-        const response = await fetch('http://192.168.86.32:3000/call/initiate-call', { // Replace with your server address
+        const response = await fetch(`https://${SERVER}/call/initiate-call`, { // Replace with your server address
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ phoneNumber: pharmacy.pharmac.formatted_phone_number }),
+          body: JSON.stringify({ phoneNumber: '+15125170223'}),
         });
 
         const data = await response.json();
+        console.log('Server response:', data); // Log the server response
 
         if (data.success) {
-          Alert.alert('Call Initiated', `Calling ${pharmacy.pharmac.name}`);
+          Alert.alert('Call Initiated')
         } else {
+          console.error('Error initiating call:', error);
           Alert.alert('Error', 'Failed to initiate call');
         }
       } catch (error) {
@@ -75,47 +80,3 @@ export default StartCallingScreen;
 
 
 
-// import React from 'react';
-// import { View, StyleSheet, Text, Button } from 'react-native';
-// import Screen from '../components/Screen';
-
-// const StartCallingScreen = ({ route, navigation }) => {
-//   const { medication, dosage, location, pharmacies } = route.params;
-
-//   const handleStartCalling = () => {
-//     // Logic to start calling pharmacies
-//     alert('Start calling pharmacies!');
-//   };
-
-//   return (
-//     <Screen>
-//       <View style={styles.container}>
-//         <Text style={styles.title}>Start Calling Pharmacies</Text>
-//         <Text style={styles.subtitle}>Medication: {medication}</Text>
-//         <Text style={styles.subtitle}>Dosage: {dosage}</Text>
-//         <Text style={styles.subtitle}>Location: {location}</Text>
-//         <Button title="Start Calling" onPress={handleStartCalling} />
-//       </View>
-//     </Screen>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 20,
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     marginBottom: 20,
-//   },
-//   subtitle: {
-//     fontSize: 18,
-//     marginBottom: 10,
-//   },
-// });
-
-// export default StartCallingScreen;
